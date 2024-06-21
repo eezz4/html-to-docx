@@ -18,6 +18,7 @@ import namespaces from '../namespaces';
 import { imageType, internalRelationship } from '../constants';
 import { vNodeHasChildren } from '../utils/vnode';
 import { isValidUrl } from '../utils/url';
+import { fixCustomVTree } from './fixCustomVTree';
 
 const convertHTML = HTMLToVDOM({
   VNode,
@@ -327,9 +328,11 @@ export async function convertVTreeToXML(docxDocumentInstance, vTree, xmlFragment
 async function renderDocumentFile(docxDocumentInstance) {
   const vTree = convertHTML(docxDocumentInstance.htmlString);
 
+  const fixVTree = fixCustomVTree(vTree);
+
   const xmlFragment = fragment({ namespaceAlias: { w: namespaces.w } });
 
-  const populatedXmlFragment = await convertVTreeToXML(docxDocumentInstance, vTree, xmlFragment);
+  const populatedXmlFragment = await convertVTreeToXML(docxDocumentInstance, fixVTree, xmlFragment);
 
   return populatedXmlFragment;
 }
